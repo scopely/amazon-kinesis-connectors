@@ -1,6 +1,15 @@
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 version = '1.0.0'
+group = 'com.amazonaws'
+
+/**
+ * To deploy, run ./gradlew publish
+ * Make sure your repository is correctly set up; put
+ * `artifactoryUser`, `artifactoryPassword`, and `artifactoryReleaseRepository`
+ * as command-line arguments or entries in your `gradle.properties`.
+ */
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -11,6 +20,24 @@ repositories {
 
 dependencies {
     compile 'org.postgresql:postgresql:9.3-1101-jdbc41'
-    compile 'com.amazonaws:aws-java-sdk:1.7.3'
+    compile 'com.amazonaws:aws-java-sdk:1.7.5'
+    compile 'com.amazonaws:amazon-kinesis-client:1.0.0'
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username artifactoryUser
+                password artifactoryPassword
+            }
+            url artifactoryReleaseRepository
+        }
+    }
+}
